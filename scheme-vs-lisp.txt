@@ -1,0 +1,70 @@
+		 PRINCIPLES OF PROGRAMMING LANGUAGES:
+			COMMON LISP VS. SCHEME
+
+	   Gary T. Leavens, Department of Computer Science,
+	   Iowa State University, Ames, Iowa 50011-1040 USA
+			leavens@cs.iastate.edu
+		     $Date: 1998/09/15 20:00:32 $
+
+The table below highlights the important differences between
+Common Lisp and Scheme for those that know a more standard
+Lisp dialect.  Only the differences are highlighted here,
+there are many more similarities.
+
+Common Lisp                     Scheme
+-------------------------------------------------------
+()	; eq to nil		()
+nil			        #f
+t			        #t
+
+(eq x y)                        (eq? x y)
+(equal x y)                     (equal? x y)
+
+(atom x)                        (not (pair? x))
+(consp x)                       (pair? x)
+(null x)                        (null? x)
+(symbolp x)                     (symbol? x)
+(zerop x)                       (zero? x)
+
+(setf (car x) y)		(set-car! x y)
+(setf (cdr x) y)		(set-cdr! x y)
+
+(mapcar #'f l)                  (map f l)
+(map 'list #'f l)		(map f l)
+
+(mapcar #'(lambda (x) (g x)) l) (map (lambda (x) (g x)) l)
+
+#'(lambda (x) y)                (lambda (x) y)
+(lambda (x) y) ; in ANSI CL     (lambda (x) y)
+
+(setq var y)                    (set! var y)
+(setf var y)                    (set! var y)
+
+(cond                           (cond
+  ((null x) 0)                    ((null? x) 0)
+  ((eq x y) (f x))                ((eq? x y) (f x))
+  (t (g y)))                      (else (g y)))
+
+(defun square (x)               (define (square x)
+  (* x x))                        (* x x))
+				; or
+				(define square (lambda (x) (* x x)))
+
+(funcall (g f) x)		((g f) x)
+
+(defun compose (f g)            (define (compose f g)
+  #'(lambda (x)                    (lambda (x)
+      (funcall f                      (f (g x))))
+        (funcall g x))))
+
+(defun my-cadr (ls)             (define my-cadr (ls)
+  (funcall                        ((compose car cdr)
+   (compose #'car #'cdr)            ls))
+   ls))
+
+
+Acknowledgments
+
+Thanks to Erik Naggum, Richard Gabriel, and Barry Margolin for correcting
+my ancient Lisp accent.  Of course any errors are not their responsibility
+but mine.
